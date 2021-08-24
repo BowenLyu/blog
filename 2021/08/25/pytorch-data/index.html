@@ -22,7 +22,7 @@
 
   
 
-  <title>Hello World | BowenLyu&#39;s Space</title>
+  <title>pytorch_data | BowenLyu&#39;s Space</title>
 
   
 
@@ -96,11 +96,11 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">Hello World</h1>
+          <h1 class="title-wrap">pytorch_data</h1>
           <h2 class="title-sub-wrap">
             <strong>BowenLyu</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2021-08-06T02:50:35.903Z" itemprop="datePublished">2021-08-06</time>
+            <time  class="article-date" datetime="2021-08-24T16:05:27.000Z" itemprop="datePublished">2021-08-25</time>
           </h2>
           <ul class="wrap-list dark">
   
@@ -129,19 +129,43 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+        <h1 id="Network-learning"><a href="#Network-learning" class="headerlink" title="Network learning"></a>Network learning</h1><h2 id="dataloader"><a href="#dataloader" class="headerlink" title="dataloader()"></a>dataloader()</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dataloader(dataset, batch_size=<span class="number">1</span>, shuffle=<span class="literal">False</span>, sampler=<span class="literal">None</span>, batch_sampler=<span class="literal">None</span>, num_workers=<span class="number">0</span>, collate_fn=<span class="literal">None</span>, pin_memory=<span class="literal">False</span>, drop_last=<span class="literal">False</span>, timeout=<span class="number">0</span>, worker_init_fn=<span class="literal">None</span>, *, prefetch_factor=<span class="number">2</span>, persistent_workers=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="dataset-style"><a href="#dataset-style" class="headerlink" title="dataset style"></a>dataset style</h3><ul>
+<li>dataset: (dataset class). if we use <strong>IterableDataset</strong>, data loading order is entirely controlled by the user-defined iterable. </li>
+<li>data loading order and sampler: the <strong>map-style datasets</strong> represents a map from indices/keys(possibly non-integral) to data samples, so there is a need to specify the sequence of indices/keys. A sampler could randomly permute a list of indices and yield each one at a time, or yield a small number of them for mini-batch SGD. <font color=red> This is why sampler or batch_sampler is not compatible with iterable-style datasets, since such datasets have no notion of a key or an index</font></li>
+</ul>
+<h3 id="batched-and-non-batched-data"><a href="#batched-and-non-batched-data" class="headerlink" title="batched and non-batched data"></a>batched and non-batched data</h3><ul>
+<li>batched and non-batched data: relative arguments: <code>batch_size</code>, <code>drop_last</code> and <code>batch_sampler</code><ul>
+<li>when <code>batch_size</code>(int, optional. default=1) is not <code>None</code>(ie. it can be <code>None</code>), the dataloader yields batched samples instead of individual samples.</li>
+<li><code>drop_last</code> (bool, optional. default=<code>False</code>) set <code>True</code> to drop the last incomplete batch, if the dataset size is not divisible by the batch_size</li>
+<li><code>batch_sampler</code> (Sampler class or iterable, optional.)</li>
+</ul>
+</li>
+</ul>
+<p>In this case,loading from a map-style dataset is roughly equivalent with:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> indices <span class="keyword">in</span> batch_sampler:</span><br><span class="line">	<span class="keyword">yield</span> collate_fn([dataset[i] <span class="keyword">for</span> i <span class="keyword">in</span>  indices])</span><br></pre></td></tr></table></figure>
+<p>and loading from an iterable-style dataset is roughly quivalent with:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dataset_iter = <span class="built_in">iter</span>(dataset)</span><br><span class="line"><span class="keyword">for</span> indices <span class="keyword">in</span> batch_sampler:</span><br><span class="line">	<span class="keyword">yield</span> collate_fn([<span class="built_in">next</span>(dataset_iter) <span class="keyword">for</span> _ <span class="keyword">in</span> indices])</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<ul>
+<li>disable automatic batching: when both <code>batch_size</code> and <code>batch_sampler</code> are <code>None</code>, automatic batching is disabled. Each sample obtained from the <code>dataset</code> is processed with the function passed as the <code>collate_fn</code> argument.</li>
+</ul>
+<p>In this case, loading from a map-style dataset is roughly equivalent wtih:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> index <span class="keyword">in</span> sampler:</span><br><span class="line">	<span class="keyword">yield</span> collate_fn(dataset[index])</span><br></pre></td></tr></table></figure>
+<p>and loading from an iterable-style dataset is roughly quivalent with:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> data <span class="keyword">in</span> <span class="built_in">iter</span>(dataset):</span><br><span class="line">	tield collate_fn(data)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>collate_fn</code>(callable, optional) <strong>When automatic batching is disabled</strong>, the default <code>collate_fn</code> simply converts NumPy arrays into PyTorch Tensors, and keep everything else untouched.<ul>
+<li><strong>when automatic batching is disabled</strong>, <code>collate_fn</code> is called with each individual data sample, and the output is yielded from the dataloader iterator. In this case, the default <code>collate_fn</code> simply converts NumPy arrays in PyTorch tensors.</li>
+<li><strong>when automatic batching is enabled</strong>, <code>collate_fn</code> is called with a list of data samples at each time. It is expected to collate the input samples into a batch for yielding from the dataloader iterator.<br>For instance,if there is a input dataset which returns a tuple (data, index), then the default <code>collate_fn</code> clolates a list of data and a list of index, i.e. [batchsize, data] and [batchsize, index]</li>
+</ul>
+</li>
+</ul>
+<h3 id="other-arguments"><a href="#other-arguments" class="headerlink" title="other arguments"></a>other arguments</h3><ul>
+<li><code>shuffle</code> (bool, optional, default= False) set <code>True</code> to have the data reshuffled at every eopch.</li>
+<li><code>num_workers</code> (int, optional, default=0 ) how many subprocesses to use for data loading. 0 means that the data will be loaded in the main process.</li>
+</ul>
+<h3 id="single-process-or-multi-process-data-loading"><a href="#single-process-or-multi-process-data-loading" class="headerlink" title="single-process or multi-process data loading"></a>single-process or multi-process data loading</h3><p>not needed for now.</p>
 
       </section>
 
@@ -154,8 +178,8 @@
     
     <div class="card-text">
       
-        <a href="/blog/2021/08/19/%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E6%98%9F%E6%98%9F%E7%82%B9%E7%82%B9/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">网络学习星星点点</h2>
+        <a href="/blog/2021/08/25/pytorch-tensor/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">pytorch_tensor</h2>
         </a>
       
       <div class="card-text--row">Newer</div>
@@ -163,6 +187,20 @@
   </article>
 </div>
           
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+    <div class="card-text">
+      
+        <a href="/blog/2021/08/19/%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E6%98%9F%E6%98%9F%E7%82%B9%E7%82%B9/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">网络学习星星点点</h2>
+        </a>
+      
+      <div class="card-text--row">Older</div>
+    </div>
+  </article>
+</div>
           
         </nav>
       
