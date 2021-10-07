@@ -140,11 +140,50 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">L =[x*x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>)] <span class="comment">#list</span></span><br><span class="line">g=(x*x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>)) <span class="comment">#generator</span></span><br></pre></td></tr></table></figure>
 <p>use <code>next</code> or loop to call generator</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">next</span>(g)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> g:</span><br><span class="line">	<span class="built_in">print</span>(n)</span><br></pre></td></tr></table></figure>
+
+<h2 id="super"><a href="#super" class="headerlink" title="super()"></a>super()</h2><p><a target="_blank" rel="noopener" href="https://rhettinger.wordpress.com/2011/05/26/super-considered-super/">read more</a></p>
+<ul>
+<li>if we want to call the function in the parent class, we can use <code>super()</code>, for instance:<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">spam</span>(<span class="params">self</span>):</span></span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&#x27;A.spam&#x27;</span>)</span><br><span class="line">	</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span>(<span class="params">A</span>):</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">spam</span>(<span class="params">self</span>):</span></span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&#x27;B.spam&#x27;</span>)</span><br><span class="line">		<span class="built_in">super</span>().spam <span class="comment"># call parent spam()</span></span><br></pre></td></tr></table></figure></li>
+<li>another common usage is to ensure that the father class is initialized correctly:<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&#x27;Base.init&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>(<span class="params">Base</span>):</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">		<span class="built_in">super</span>().__init__()</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&#x27;A.init&#x27;</span>)</span><br></pre></td></tr></table></figure>
+notes: python 3 can replace <code>super(class,self).xxx</code> in python 2 with <code>super().xxx</code></li>
+</ul>
+<h2 id="setattr-amp-getattr-amp-delattr"><a href="#setattr-amp-getattr-amp-delattr" class="headerlink" title="setattr &amp; getattr &amp; delattr"></a><strong>setattr</strong> &amp; <strong>getattr</strong> &amp; <strong>delattr</strong></h2><p>these three are default functions that are responsible for setting/getting/deleting attribute<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/62569340">https://zhuanlan.zhihu.com/p/62569340</a></p>
+<h2 id="enumerate"><a href="#enumerate" class="headerlink" title="enumerate"></a>enumerate</h2><p><code>enumerate(sequence,[start=0])</code> returns a tuple containing a count(from start which defaults to 0) and the values obtained from iterating over iterable.<br>it allows us to loop over something and have an automatic counter.</p>
+<p>normal loop</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">i=<span class="number">0</span></span><br><span class="line">seq=[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;c&#x27;</span>]</span><br><span class="line"><span class="keyword">for</span> element <span class="keyword">in</span> seq:</span><br><span class="line">	<span class="built_in">print</span>(i,seq[i])</span><br><span class="line">	i=i+<span class="number">1</span></span><br><span class="line">	</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0</span> a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">1</span> b</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">2</span> c</span><br></pre></td></tr></table></figure>
+<p>using enumerate</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">seq=[<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;c&#x27;</span>]</span><br><span class="line"><span class="keyword">for</span> i, element <span class="keyword">in</span> <span class="built_in">enumerate</span>(seq):</span><br><span class="line">	<span class="built_in">print</span>(i,seq[i])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0</span> a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">1</span> b</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">2</span> c</span><br></pre></td></tr></table></figure>
+
+<h2 id="property-amp-xxx-setter"><a href="#property-amp-xxx-setter" class="headerlink" title="@property &amp; @xxx.setter"></a>@property &amp; @xxx.setter</h2><p>@property can transform a method of the class to attribute of the class(which is read only). And the @xxx.setter is responsible for transforming the method to the <code>setter</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">		self._x = <span class="number">0</span></span><br><span class="line"><span class="meta">	@property</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">x</span>(<span class="params">self</span>):</span></span><br><span class="line">		<span class="keyword">return</span> self._x</span><br><span class="line">		</span><br><span class="line"><span class="meta">	@x.setter</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">x</span>(<span class="params">self, value</span>):</span></span><br><span class="line">		self._x= value</span><br><span class="line">		</span><br><span class="line">a= A()</span><br><span class="line"><span class="built_in">print</span>(a.x)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0</span></span><br><span class="line">a.x=<span class="number">10</span></span><br><span class="line"><span class="built_in">print</span>(a.x)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">10</span></span><br></pre></td></tr></table></figure>
+<p>notes: _x in code above can not be x, otherwise it will report error.<a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1016959663602400/1017502538658208">read more</a></p>
+<h1 id="args-amp-kwargs-positional-argument-and-keyword-argument"><a href="#args-amp-kwargs-positional-argument-and-keyword-argument" class="headerlink" title="*args &amp; **kwargs (positional argument and keyword argument)"></a>*args &amp; **kwargs (positional argument and keyword argument)</h1><p>you can pass argument of unknown numbers to the function. ‘unknown’ means that it doesn’t know how many arguments the users will pass.<br>the * is necessary, you can also write *a, **k </p>
+<p>the differences between *args and **kwargs:</p>
+<ul>
+<li>*args is non keyword arguments, actually a tuple or list?</li>
+<li>**kwargs is keyword arguments, actually a dict</li>
+<li>*args must be in the front of **kwargs </li>
+</ul>
+
       </section>
 
       
       
         <nav class="article-nav">
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+    <div class="card-text">
+      
+        <a href="/blog/2021/10/07/pytorch_module/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">pytorch_module</h2>
+        </a>
+      
+      <div class="card-text--row">Newer</div>
+    </div>
+  </article>
+</div>
           
           
             <div class="article-nav-item layout-padding">
@@ -152,8 +191,8 @@
     
     <div class="card-text">
       
-        <a href="/blog/2021/08/25/pytorch-tensor/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">pytorch_tensor</h2>
+        <a href="/blog/2021/08/25/pytorch-data/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">pytorch_data</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -195,7 +234,7 @@
         <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
 </svg>
-        <span>5</span>
+        <span>7</span>
       </div>
       <div class="count-box--item">
         <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">

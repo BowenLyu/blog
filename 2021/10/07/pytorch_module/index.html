@@ -22,7 +22,7 @@
 
   
 
-  <title>pytorch_data | BowenLyu&#39;s Space</title>
+  <title>pytorch_module | BowenLyu&#39;s Space</title>
 
   
 
@@ -96,11 +96,11 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">pytorch_data</h1>
+          <h1 class="title-wrap">pytorch_module</h1>
           <h2 class="title-sub-wrap">
             <strong>BowenLyu</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2021-08-24T16:05:27.000Z" itemprop="datePublished">2021-08-25</time>
+            <time  class="article-date" datetime="2021-10-07T02:05:27.000Z" itemprop="datePublished">2021-10-07</time>
           </h2>
           <ul class="wrap-list dark">
   
@@ -129,43 +129,19 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1 id="Network-learning"><a href="#Network-learning" class="headerlink" title="Network learning"></a>Network learning</h1><h2 id="dataloader"><a href="#dataloader" class="headerlink" title="dataloader()"></a>dataloader()</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dataloader(dataset, batch_size=<span class="number">1</span>, shuffle=<span class="literal">False</span>, sampler=<span class="literal">None</span>, batch_sampler=<span class="literal">None</span>, num_workers=<span class="number">0</span>, collate_fn=<span class="literal">None</span>, pin_memory=<span class="literal">False</span>, drop_last=<span class="literal">False</span>, timeout=<span class="number">0</span>, worker_init_fn=<span class="literal">None</span>, *, prefetch_factor=<span class="number">2</span>, persistent_workers=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
-<h3 id="dataset-style"><a href="#dataset-style" class="headerlink" title="dataset style"></a>dataset style</h3><ul>
-<li>dataset: (dataset class). if we use <strong>IterableDataset</strong>, data loading order is entirely controlled by the user-defined iterable. </li>
-<li>data loading order and sampler: the <strong>map-style datasets</strong> represents a map from indices/keys(possibly non-integral) to data samples, so there is a need to specify the sequence of indices/keys. A sampler could randomly permute a list of indices and yield each one at a time, or yield a small number of them for mini-batch SGD. <font color=red> This is why sampler or batch_sampler is not compatible with iterable-style datasets, since such datasets have no notion of a key or an index</font></li>
-</ul>
-<h3 id="batched-and-non-batched-data"><a href="#batched-and-non-batched-data" class="headerlink" title="batched and non-batched data"></a>batched and non-batched data</h3><ul>
-<li>batched and non-batched data: relative arguments: <code>batch_size</code>, <code>drop_last</code> and <code>batch_sampler</code><ul>
-<li>when <code>batch_size</code>(int, optional. default=1) is not <code>None</code>(ie. it can be <code>None</code>), the dataloader yields batched samples instead of individual samples.</li>
-<li><code>drop_last</code> (bool, optional. default=<code>False</code>) set <code>True</code> to drop the last incomplete batch, if the dataset size is not divisible by the batch_size</li>
-<li><code>batch_sampler</code> (Sampler class or iterable, optional.)</li>
-</ul>
-</li>
-</ul>
-<p>In this case,loading from a map-style dataset is roughly equivalent with:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> indices <span class="keyword">in</span> batch_sampler:</span><br><span class="line">	<span class="keyword">yield</span> collate_fn([dataset[i] <span class="keyword">for</span> i <span class="keyword">in</span>  indices])</span><br></pre></td></tr></table></figure>
-<p>and loading from an iterable-style dataset is roughly quivalent with:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dataset_iter = <span class="built_in">iter</span>(dataset)</span><br><span class="line"><span class="keyword">for</span> indices <span class="keyword">in</span> batch_sampler:</span><br><span class="line">	<span class="keyword">yield</span> collate_fn([<span class="built_in">next</span>(dataset_iter) <span class="keyword">for</span> _ <span class="keyword">in</span> indices])</span><br></pre></td></tr></table></figure>
+        <h1 id="module"><a href="#module" class="headerlink" title="module"></a>module</h1><p>Base class for all neural network modules.</p>
+<h2 id="commen-usage"><a href="#commen-usage" class="headerlink" title="commen usage"></a>commen usage</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">		<span class="built_in">super</span>().__init__()</span><br><span class="line">		self.conv1 = nn.Conv2d(<span class="number">1</span>,<span class="number">20</span>,<span class="number">5</span>)</span><br><span class="line">		self.conv2 = nn.Conv2d(<span class="number">20</span>,<span class="number">20</span>,<span class="number">5</span>)</span><br><span class="line">		</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self,x</span>):</span></span><br><span class="line">		x = F.relu(self.conv1(x))</span><br><span class="line">		<span class="keyword">return</span> F.relu(self.conv2(x))</span><br></pre></td></tr></table></figure>
 
+<h2 id="to"><a href="#to" class="headerlink" title="to()"></a>to()</h2><p>example:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">model = network()</span><br><span class="line">device = torch.device(<span class="string">&#x27;cuda&#x27;</span>)</span><br><span class="line">model.to(device)</span><br><span class="line"><span class="comment"># or </span></span><br><span class="line"><span class="comment"># model = model.to(device)</span></span><br></pre></td></tr></table></figure>
+<p>this will moves the model to the device, usually on GPU.</p>
+<h2 id="model-eval-amp-with-torch-no-grad"><a href="#model-eval-amp-with-torch-no-grad" class="headerlink" title="model.eval() &amp; with torch.no_grad()"></a>model.eval() &amp; with torch.no_grad()</h2><p>these have different goals:</p>
 <ul>
-<li>disable automatic batching: when both <code>batch_size</code> and <code>batch_sampler</code> are <code>None</code>, automatic batching is disabled. Each sample obtained from the <code>dataset</code> is processed with the function passed as the <code>collate_fn</code> argument.</li>
+<li>model.eval() will notify all your layers that you are in eval mode, that way, batchnorm or dropout will not work in the eval mode.</li>
+<li>torch.no_grad() impacts the autograd engine and deactivate it.</li>
+<li>the commen practice for evaluating/validation is using <code>with torch.no_grad()</code> in pair with <code>model.eval()</code> :<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">model.<span class="built_in">eval</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> torch.no_grad():</span><br><span class="line">	...</span><br><span class="line">	output = model(data)</span><br><span class="line">	...</span><br><span class="line">	</span><br><span class="line"><span class="comment">#training step </span></span><br><span class="line">model.train()</span><br></pre></td></tr></table></figure>
+and after that don’t forget to turn back to training mode using <code>model.train()</code></li>
 </ul>
-<p>In this case, loading from a map-style dataset is roughly equivalent wtih:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> index <span class="keyword">in</span> sampler:</span><br><span class="line">	<span class="keyword">yield</span> collate_fn(dataset[index])</span><br></pre></td></tr></table></figure>
-<p>and loading from an iterable-style dataset is roughly quivalent with:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> data <span class="keyword">in</span> <span class="built_in">iter</span>(dataset):</span><br><span class="line">	tield collate_fn(data)</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>collate_fn</code>(callable, optional) <strong>When automatic batching is disabled</strong>, the default <code>collate_fn</code> simply converts NumPy arrays into PyTorch Tensors, and keep everything else untouched.<ul>
-<li><strong>when automatic batching is disabled</strong>, <code>collate_fn</code> is called with each individual data sample, and the output is yielded from the dataloader iterator. In this case, the default <code>collate_fn</code> simply converts NumPy arrays in PyTorch tensors.</li>
-<li><strong>when automatic batching is enabled</strong>, <code>collate_fn</code> is called with a list of data samples at each time. It is expected to collate the input samples into a batch for yielding from the dataloader iterator.<br>For instance,if there is a input dataset which returns a tuple (data, index), then the default <code>collate_fn</code> clolates a list of data and a list of index, i.e. [batchsize, data] and [batchsize, index]</li>
-</ul>
-</li>
-</ul>
-<h3 id="other-arguments"><a href="#other-arguments" class="headerlink" title="other arguments"></a>other arguments</h3><ul>
-<li><code>shuffle</code> (bool, optional, default= False) set <code>True</code> to have the data reshuffled at every eopch.</li>
-<li><code>num_workers</code> (int, optional, default=0 ) how many subprocesses to use for data loading. 0 means that the data will be loaded in the main process.</li>
-</ul>
-<h3 id="single-process-or-multi-process-data-loading"><a href="#single-process-or-multi-process-data-loading" class="headerlink" title="single-process or multi-process data loading"></a>single-process or multi-process data loading</h3><p>not needed for now.</p>
 
       </section>
 
@@ -178,8 +154,8 @@
     
     <div class="card-text">
       
-        <a href="/blog/2021/08/25/python/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">python</h2>
+        <a href="/blog/2021/10/07/python_tips/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">pytorch_tips</h2>
         </a>
       
       <div class="card-text--row">Newer</div>
@@ -193,8 +169,8 @@
     
     <div class="card-text">
       
-        <a href="/blog/2021/08/25/pytorch_tensor/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">pytorch_data</h2>
+        <a href="/blog/2021/08/25/python/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">python</h2>
         </a>
       
       <div class="card-text--row">Older</div>
